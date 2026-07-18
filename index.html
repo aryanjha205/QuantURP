@@ -7,11 +7,10 @@
   <meta name="theme-color" content="#00C853">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>QuantURP — Login</title>
+  <title>QuantURP — Authentication</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect rx='20' width='100' height='100' fill='%2300C853'/><text x='50' y='68' font-size='50' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>Q</text></svg>">
   <link rel="stylesheet" href="css/style.css">
-  <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
@@ -46,9 +45,10 @@
       </div>
     </div>
 
-    <!-- ── Right Login Form ── -->
+    <!-- ── Right Login & Signup Panel ── -->
     <div class="login-form-panel">
-      <div class="login-form-container">
+      <!-- SIGN IN VIEW -->
+      <div class="login-form-container" id="signInView">
         <h1 class="login-title">Welcome back</h1>
         <p class="login-subtitle">Sign in to your QuantURP account</p>
 
@@ -61,14 +61,7 @@
           <div class="form-group">
             <label for="email">Email Address</label>
             <div class="input-wrapper">
-              <input
-                type="email"
-                id="email"
-                name="username"
-                placeholder="you@company.com"
-                required
-                autocomplete="email"
-              >
+              <input type="email" id="email" name="username" placeholder="you@company.com" required autocomplete="email">
               <i data-lucide="mail" class="input-icon" style="width:18px;height:18px;"></i>
             </div>
           </div>
@@ -76,14 +69,7 @@
           <div class="form-group">
             <label for="password">Password</label>
             <div class="input-wrapper">
-              <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Enter your password"
-                required
-                autocomplete="current-password"
-              >
+              <input type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password">
               <i data-lucide="lock" class="input-icon" style="width:18px;height:18px;"></i>
               <button type="button" class="password-toggle" id="togglePassword" aria-label="Toggle password visibility">
                 <i data-lucide="eye" style="width:18px;height:18px;"></i>
@@ -96,10 +82,101 @@
           </button>
         </form>
 
-        <p style="text-align:center;margin-top:1.5rem;font-size:0.82rem;color:var(--gray-400);">
-          QuantURP v1.0 — Powered by AI
+        <p style="text-align:center;margin-top:1.5rem;font-size:0.88rem;color:var(--gray-600);">
+          Don't have an account? <a href="#" onclick="showView('signUpView')" style="color:var(--parrot);font-weight:600;">Sign Up</a>
         </p>
       </div>
+
+      <!-- SIGN UP VIEW -->
+      <div class="login-form-container hidden" id="signUpView">
+        <h1 class="login-title">Create Account</h1>
+        <p class="login-subtitle">Register a new profile on QuantURP</p>
+
+        <div class="login-error" id="signupError">
+          <i data-lucide="alert-circle" style="width:18px;height:18px;flex-shrink:0;"></i>
+          <span id="signupErrorText">Failed to create account</span>
+        </div>
+
+        <form id="signupForm">
+          <div class="form-group">
+            <label for="signupName">Full Name</label>
+            <div class="input-wrapper">
+              <input type="text" id="signupName" required placeholder="John Doe">
+              <i data-lucide="user" class="input-icon" style="width:18px;height:18px;"></i>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="signupEmail">Email Address</label>
+            <div class="input-wrapper">
+              <input type="email" id="signupEmail" required placeholder="john@company.com">
+              <i data-lucide="mail" class="input-icon" style="width:18px;height:18px;"></i>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="signupPassword">Password</label>
+            <div class="input-wrapper">
+              <input type="password" id="signupPassword" required placeholder="Create a password">
+              <i data-lucide="lock" class="input-icon" style="width:18px;height:18px;"></i>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="signupRole">Company Role</label>
+            <div class="input-wrapper">
+              <select id="signupRole" required style="width:100%;padding:0.85rem 1rem 0.85rem 2.75rem;border:2px solid var(--gray-200);border-radius:var(--radius-md);background:var(--white);font-family:inherit;">
+                <option value="Employee">Employee</option>
+                <option value="Administrator">Administrator</option>
+                <option value="CEO">CEO</option>
+                <option value="Manager">Manager</option>
+                <option value="Finance">Finance</option>
+                <option value="Sales">Sales</option>
+                <option value="Inventory">Inventory</option>
+                <option value="HR">HR</option>
+              </select>
+              <i data-lucide="briefcase" class="input-icon" style="width:18px;height:18px;"></i>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" id="signupBtn">
+            <span class="btn-text">Send Verification OTP</span>
+          </button>
+        </form>
+
+        <p style="text-align:center;margin-top:1.5rem;font-size:0.88rem;color:var(--gray-600);">
+          Already have an account? <a href="#" onclick="showView('signInView')" style="color:var(--parrot);font-weight:600;">Sign In</a>
+        </p>
+      </div>
+
+      <!-- OTP VERIFICATION VIEW -->
+      <div class="login-form-container hidden" id="otpView">
+        <h1 class="login-title">Verify OTP</h1>
+        <p class="login-subtitle" id="otpSubtitle">We have sent a verification code to your email</p>
+
+        <div class="login-error" id="otpError">
+          <i data-lucide="alert-circle" style="width:18px;height:18px;flex-shrink:0;"></i>
+          <span id="otpErrorText">Invalid verification code</span>
+        </div>
+
+        <form id="otpForm">
+          <div class="form-group">
+            <label for="otpCode">6-Digit Code</label>
+            <div class="input-wrapper">
+              <input type="text" id="otpCode" required maxlength="6" pattern="\d{6}" placeholder="123456" style="text-align:center;font-size:1.5rem;letter-spacing:8px;padding-left:1rem;">
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" id="verifyBtn">
+            <span class="btn-text">Verify & Register</span>
+          </button>
+        </form>
+
+        <p style="text-align:center;margin-top:1.5rem;font-size:0.88rem;color:var(--gray-600);">
+          Didn't receive code? <a href="#" onclick="showView('signUpView')" style="color:var(--parrot);font-weight:600;">Go Back</a>
+        </p>
+      </div>
+
     </div>
   </div>
 
@@ -110,6 +187,14 @@
   <script>
     // Initialize Lucide icons
     lucide.createIcons();
+
+    // Navigation helper
+    function showView(viewId) {
+      document.getElementById('signInView').classList.add('hidden');
+      document.getElementById('signUpView').classList.add('hidden');
+      document.getElementById('otpView').classList.add('hidden');
+      document.getElementById(viewId).classList.remove('hidden');
+    }
 
     // Password toggle
     const toggleBtn = document.getElementById('togglePassword');
@@ -128,7 +213,7 @@
       window.location.href = 'dashboard.html';
     }
 
-    // Form submit
+    // Form submit: SIGN IN
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('loginBtn');
@@ -147,6 +232,80 @@
       } catch (err) {
         errorText.textContent = err.message || 'Invalid email or password';
         errorDiv.classList.add('show');
+        btn.classList.remove('loading');
+      }
+    });
+
+    // Form submit: SIGN UP (OTP Request)
+    let tempSignupData = {};
+    document.getElementById('signupForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('signupBtn');
+      const errorDiv = document.getElementById('signupError');
+      const errorText = document.getElementById('signupErrorText');
+
+      btn.classList.add('loading');
+      errorDiv.classList.remove('show');
+
+      const email = document.getElementById('signupEmail').value;
+      const password = document.getElementById('signupPassword').value;
+      const fullName = document.getElementById('signupName').value;
+      const role = document.getElementById('signupRole').value;
+
+      tempSignupData = { email, password, full_name: fullName, role };
+
+      try {
+        const res = await fetch('https://quanturpp.vercel.app/api/v1/signup/request-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(tempSignupData)
+        });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || 'Could not send OTP');
+        }
+
+        document.getElementById('otpSubtitle').textContent = `We sent a verification code to ${email}`;
+        showView('otpView');
+      } catch (err) {
+        errorText.textContent = err.message;
+        errorDiv.classList.add('show');
+      } finally {
+        btn.classList.remove('loading');
+      }
+    });
+
+    // Form submit: OTP VERIFY
+    document.getElementById('otpForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('verifyBtn');
+      const errorDiv = document.getElementById('otpError');
+      const errorText = document.getElementById('otpErrorText');
+
+      btn.classList.add('loading');
+      errorDiv.classList.remove('show');
+
+      const code = document.getElementById('otpCode').value;
+
+      try {
+        const res = await fetch(`https://quanturpp.vercel.app/api/v1/signup/verify-otp?otp=${code}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || 'Invalid or expired OTP');
+        }
+
+        // Successfully registered! Let's auto-login.
+        await Auth.login(tempSignupData.email, tempSignupData.password);
+        window.location.href = 'dashboard.html';
+      } catch (err) {
+        errorText.textContent = err.message;
+        errorDiv.classList.add('show');
+      } finally {
         btn.classList.remove('loading');
       }
     });
