@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="QuantURP Dashboard — Manage your entire business operations from one unified platform.">
+  <meta name="theme-color" content="#00C853">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>QuantURP — Dashboard</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect rx='20' width='100' height='100' fill='%2300C853'/><text x='50' y='68' font-size='50' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>Q</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="dashboard-wrapper">
+    <!-- ═══════ SIDEBAR ═══════ -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">Q</div>
+        <div class="sidebar-brand">Quant<span>URP</span></div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Main</div>
+        <div class="nav-item active" data-page="dashboard" onclick="App.navigate('dashboard')">
+          <i data-lucide="layout-dashboard" class="nav-icon" style="width:20px;height:20px;"></i>
+          <span>Dashboard</span>
+        </div>
+
+        <div class="nav-section-title">Modules</div>
+        <div class="nav-item" data-page="inventory" onclick="App.navigate('inventory')">
+          <i data-lucide="package" class="nav-icon" style="width:20px;height:20px;"></i>
+          <span>Inventory</span>
+        </div>
+        <div class="nav-item" data-page="sales" onclick="App.navigate('sales')">
+          <i data-lucide="shopping-cart" class="nav-icon" style="width:20px;height:20px;"></i>
+          <span>Sales</span>
+        </div>
+        <div class="nav-item" data-page="crm" onclick="App.navigate('crm')">
+          <i data-lucide="users" class="nav-icon" style="width:20px;height:20px;"></i>
+          <span>CRM</span>
+        </div>
+        <div class="nav-item" data-page="finance" onclick="App.navigate('finance')">
+          <i data-lucide="indian-rupee" class="nav-icon" style="width:20px;height:20px;"></i>
+          <span>Finance</span>
+        </div>
+        <div class="nav-item" data-page="hr" onclick="App.navigate('hr')">
+          <i data-lucide="briefcase" class="nav-icon" style="width:20px;height:20px;"></i>
+          <span>HR</span>
+        </div>
+
+        <div class="nav-section-title">System</div>
+        <div class="nav-item" data-page="settings" onclick="App.navigate('settings')">
+          <i data-lucide="settings" class="nav-icon" style="width:20px;height:20px;"></i>
+          <span>Settings</span>
+        </div>
+      </nav>
+
+      <div class="sidebar-user">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <div class="user-info">
+          <div class="user-name" id="userName">Loading...</div>
+          <div class="user-role" id="userRole">—</div>
+        </div>
+        <button class="logout-btn" onclick="Auth.logout()" title="Logout">
+          <i data-lucide="log-out" style="width:18px;height:18px;"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ═══════ SIDEBAR OVERLAY (mobile) ═══════ -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="App.closeSidebar()"></div>
+
+    <!-- ═══════ MAIN CONTENT ═══════ -->
+    <div class="main-content">
+      <!-- Top Bar -->
+      <div class="topbar">
+        <button class="menu-toggle" onclick="App.toggleSidebar()" aria-label="Toggle menu">
+          <i data-lucide="menu" style="width:22px;height:22px;"></i>
+        </button>
+        <div class="page-title" id="pageTitle">Dashboard</div>
+        <div class="search-bar">
+          <i data-lucide="search" class="search-icon" style="width:16px;height:16px;"></i>
+          <input type="text" placeholder="Search anything..." id="globalSearch">
+        </div>
+        <div class="topbar-actions">
+          <button class="btn-icon notification-btn" title="Notifications">
+            <i data-lucide="bell" style="width:20px;height:20px;"></i>
+            <span class="notif-dot"></span>
+          </button>
+          <button class="btn-icon" title="Refresh" onclick="App.refreshCurrentPage()">
+            <i data-lucide="refresh-cw" style="width:19px;height:19px;"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Page Content -->
+      <div class="page-content">
+
+        <!-- ═══════════════════════════════════
+             DASHBOARD PAGE
+             ═══════════════════════════════════ -->
+        <section class="page-section active" id="page-dashboard">
+          <div class="stats-grid">
+            <div class="stat-card green">
+              <div class="stat-header">
+                <div class="stat-icon"><i data-lucide="indian-rupee" style="width:24px;height:24px;"></i></div>
+              </div>
+              <div class="stat-value" id="statRevenue">₹0</div>
+              <div class="stat-label">Total Revenue</div>
+            </div>
+            <div class="stat-card blue">
+              <div class="stat-header">
+                <div class="stat-icon"><i data-lucide="shopping-bag" style="width:24px;height:24px;"></i></div>
+              </div>
+              <div class="stat-value" id="statOrders">0</div>
+              <div class="stat-label">Total Orders</div>
+            </div>
+            <div class="stat-card orange">
+              <div class="stat-header">
+                <div class="stat-icon"><i data-lucide="users" style="width:24px;height:24px;"></i></div>
+              </div>
+              <div class="stat-value" id="statCustomers">0</div>
+              <div class="stat-label">Customers</div>
+            </div>
+            <div class="stat-card red">
+              <div class="stat-header">
+                <div class="stat-icon"><i data-lucide="package" style="width:24px;height:24px;"></i></div>
+              </div>
+              <div class="stat-value" id="statProducts">0</div>
+              <div class="stat-label">Products</div>
+            </div>
+          </div>
+
+          <div class="charts-grid">
+            <div class="card">
+              <div class="card-header">
+                <h3>Revenue Overview</h3>
+              </div>
+              <div class="card-body">
+                <div class="chart-canvas-wrapper">
+                  <canvas id="revenueChart"></canvas>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <h3>Order Status</h3>
+              </div>
+              <div class="card-body">
+                <div class="chart-canvas-wrapper">
+                  <canvas id="orderStatusChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3>Recent Orders</h3>
+            </div>
+            <div class="card-body">
+              <div class="table-container">
+                <table class="data-table" id="recentOrdersTable">
+                  <thead>
+                    <tr>
+                      <th>Order ID</th>
+                      <th>Customer</th>
+                      <th>Amount</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recentOrdersBody">
+                    <!-- Populated by API -->
+                  </tbody>
+                </table>
+              </div>
+              <div class="empty-state" id="dashboardOrdersEmpty" style="display:none;">
+                <div class="empty-icon">📋</div>
+                <div class="empty-title">No orders yet</div>
+                <div class="empty-desc">Orders will appear here once they are created through the Sales module.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ═══════════════════════════════════
+             INVENTORY PAGE
+             ═══════════════════════════════════ -->
+        <section class="page-section" id="page-inventory">
+          <div class="module-header">
+            <h2>Inventory Management</h2>
+            <div class="header-actions">
+              <button class="btn btn-primary btn-sm" onclick="App.showModal('addProductModal')">
+                <i data-lucide="plus" style="width:16px;height:16px;"></i> Add Product
+              </button>
+            </div>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-card green">
+              <div class="stat-header">
+                <div class="stat-icon"><i data-lucide="package" style="width:24px;height:24px;"></i></div>
+              </div>
+              <div class="stat-value" id="invTotalProducts">0</div>
+              <div class="stat-label">Total Products</div>
+            </div>
+            <div class="stat-card blue">
+              <div class="stat-header">
+                <div class="stat-icon"><i data-lucide="warehouse" style="width:24px;height:24px;"></i></div>
+              </div>
+              <div class="stat-value" id="invWarehouses">0</div>
+              <div class="stat-label">Warehouses</div>
+            </div>
+            <div class="stat-card orange">
+              <div class="stat-header">
+                <div class="stat-icon"><i data-lucide="layers" style="width:24px;height:24px;"></i></div>
+              </div>
+              <div class="stat-value" id="invCategories">0</div>
+              <div class="stat-label">Categories</div>
+            </div>
+            <div class="stat-card red">
+              <div class="stat-header">
+                <div class="stat-icon"><i data-lucide="alert-triangle" style="width:24px;height:24px;"></i></div>
+              </div>
+              <div class="stat-value" id="invLowStock">0</div>
+              <div class="stat-label">Low Stock Items</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3>Products</h3>
+              <div class="filter-bar">
+                <input type="text" placeholder="Search products..." id="inventorySearch" oninput="App.filterTable('inventoryBody', this.value)">
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="table-container">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>SKU</th>
+                      <th>Product Name</th>
+                      <th>Category</th>
+                      <th>Price</th>
+                      <th>Cost</th>
+                      <th>Stock</th>
+                    </tr>
+                  </thead>
+                  <tbody id="inventoryBody">
+                  </tbody>
+                </table>
+              </div>
+              <div class="empty-state" id="inventoryEmpty">
+                <div class="empty-icon">📦</div>
+                <div class="empty-title">No products found</div>
+                <div class="empty-desc">Products will appear here once they are added through the backend API.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ═══════════════════════════════════
+             SALES PAGE
+             ═══════════════════════════════════ -->
+        <section class="page-section" id="page-sales">
+          <div class="module-header">
+            <h2>Sales Management</h2>
+            <div class="header-actions">
+              <button class="btn btn-primary btn-sm" onclick="App.showModal('addOrderModal')">
+                <i data-lucide="plus" style="width:16px;height:16px;"></i> New Order
+              </button>
+            </div>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-card green">
+              <div class="stat-header">
+                <div class="stat-icon"><i data-lucide="trending-up" style="width:24px;height:24px;"></i></div>
+              </div>
+              <div class="stat-value" id="salesTotalRevenue">₹0</div>
+              <div class="stat-label">Total Revenue</div>
+            </div>
+            <div class="stat-card blue">
+              <div class="stat-header">
+                <div class="stat-icon"><i data-lucide="shopping-cart" style="width:24px;height:24px;"></i></div>
+              </div>
+              <div class="stat-value" id="salesTotalOrders">0</div>
+              <div class="stat-label">Total Orders</div>
+            </div>
+            <div class="stat-card orange">
+              <div class="stat-header">
+                <div class="stat-icon"><i data-lucide="clock" style="width:24px;height:24px;"></i></div>
+              </div>
+              <div class="stat-value" id="salesPending">0</div>
+              <div class="stat-label">Pending Orders</div>
+            </div>
+            <div class="stat-card red">
+              <div class="stat-header">
+                <div class="stat-icon"><i data-lucide="truck" style="width:24px;height:24px;"></i></div>
+              </div>
+              <div class="stat-value" id="salesDelivered">0</div>
+              <div class="stat-label">Delivered</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3>Orders</h3>
+              <div class="filter-bar">
+                <input type="text" placeholder="Search orders..." id="salesSearch" oninput="App.filterTable('salesBody', this.value)">
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="table-container">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Order #</th>
+                      <th>Customer</th>
+                      <th>Items</th>
+                      <th>Total</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody id="salesBody">
+                  </tbody>
+                </table>
+              </div>
+              <div class="empty-state" id="salesEmpty">
+                <div class="empty-icon">🛒</div>
+                <div class="empty-title">No orders found</div>
+                <div class="empty-desc">Orders will appear here once they are placed. Add CRUD endpoints in the backend to manage orders.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ═══════════════════════════════════
+             CRM PAGE
+             ═══════════════════════════════════ -->
+        <section class="page-section" id="page-crm">
+          <div class="module-header">
+            <h2>CRM — Lead Management</h2>
+            <div class="header-actions">
+              <button class="btn btn-primary btn-sm" onclick="App.showModal('addLeadModal')">
+                <i data-lucide="plus" style="width:16px;height:16px;"></i> Add Lead
+              </button>
+            </div>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-card green">
+              <div class="stat-header">
+                <div class="stat-icon"><i data-lucide="user-plus" style="width:24px;height:24px;"></i></div>
+              </div>
+              <div class="stat-value" id="crmTotalLeads">0</div>
+              <div class="stat-label">Total Leads</div>
+            </div>
+            <div class="stat-card blue">
+              <div class="stat-header">
+                <div class="stat-icon"><i data-lucide="star" style="width:24px;height:24px;"></i></div>
+              </div>
+              <div class="stat-value" id="crmQualified">0</div>
+              <div class="stat-label">Qualified</div>
+            </div>
+            <div class="stat-card orange">
+              <div class="stat-header">
+                <div class="stat-icon"><i data-lucide="phone" style="width:24px;height:24px;"></i></div>
+              </div>
+              <div class="stat-value" id="crmContacted">0</div>
+              <div class="stat-label">Contacted</div>
+            </div>
+            <div class="stat-card red">
+              <div class="stat-header">
+                <div class="stat-icon"><i data-lucide="check-circle" style="width:24px;height:24px;"></i></div>
+              </div>
+              <div class="stat-value" id="crmConverted">0</div>
+              <div class="stat-label">Converted</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3>Leads</h3>
+              <div class="filter-bar">
+                <input type="text" placeholder="Search leads..." id="crmSearch" oninput="App.filterTable('crmBody', this.value)">
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="table-container">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Company</th>
+                      <th>Email</th>
+                      <th>Phone</th>
+                      <th>Status</th>
+                      <th>Created</th>
+                    </tr>
+                  </thead>
+                  <tbody id="crmBody">
+                  </tbody>
+                </table>
+              </div>
+              <div class="empty-state" id="crmEmpty">
+                <div class="empty-icon">🤝</div>
+                <div class="empty-title">No leads found</div>
+                <div class="empty-desc">Leads will appear here once CRM endpoints are added to the backend.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ═══════════════════════════════════
+             FINANCE PAGE
+             ═══════════════════════════════════ -->
+        <section class="page-section" id="page-finance">
+          <div class="module-header">
+            <h2>Finance & Accounting</h2>
+            <div class="header-actions">
+              <button class="btn btn-primary btn-sm" onclick="App.showModal('addTransactionModal')">
+                <i data-lucide="plus" style="width:16px;height:16px;"></i> Add Transaction
+              </button>
+            </div>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-card green">
+              <div class="stat-header">
+                <div class="stat-icon"><i data-lucide="trending-up" style="width:24px;height:24px;"></i></div>
+              </div>
+              <div class="stat-value" id="finIncome">₹0</div>
+              <div class="stat-label">Total Income</div>
+            </div>
+            <div class="stat-card red">
+              <div class="stat-header">
+                <div class="stat-icon"><i data-lucide="trending-down" style="width:24px;height:24px;"></i></div>
+              </div>
+              <div class="stat-value" id="finExpense">₹0</div>
+              <div class="stat-label">Total Expenses</div>
+            </div>
+            <div class="stat-card blue">
+              <div class="stat-header">
+                <div class="stat-icon"><i data-lucide="wallet" style="width:24px;height:24px;"></i></div>
+              </div>
+              <div class="stat-value" id="finBalance">₹0</div>
+              <div class="stat-label">Net Balance</div>
+            </div>
+            <div class="stat-card orange">
+              <div class="stat-header">
+                <div class="stat-icon"><i data-lucide="file-text" style="width:24px;height:24px;"></i></div>
+              </div>
+              <div class="stat-value" id="finTransactions">0</div>
+              <div class="stat-label">Transactions</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3>Transactions</h3>
+              <div class="filter-bar">
+                <input type="text" placeholder="Search transactions..." id="financeSearch" oninput="App.filterTable('financeBody', this.value)">
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="table-container">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Type</th>
+                      <th>Description</th>
+                      <th>Amount</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody id="financeBody">
+                  </tbody>
+                </table>
+              </div>
+              <div class="empty-state" id="financeEmpty">
+                <div class="empty-icon">💰</div>
+                <div class="empty-title">No transactions found</div>
+                <div class="empty-desc">Financial transactions will appear here once finance endpoints are added to the backend.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ═══════════════════════════════════
+             HR PAGE
+             ═══════════════════════════════════ -->
+        <section class="page-section" id="page-hr">
+          <div class="module-header">
+            <h2>Human Resources</h2>
+            <div class="header-actions">
+              <button class="btn btn-primary btn-sm" onclick="App.showModal('addEmployeeModal')">
+                <i data-lucide="plus" style="width:16px;height:16px;"></i> Add Employee
+              </button>
+            </div>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-card green">
+              <div class="stat-header">
+                <div class="stat-icon"><i data-lucide="users" style="width:24px;height:24px;"></i></div>
+              </div>
+              <div class="stat-value" id="hrEmployees">0</div>
+              <div class="stat-label">Total Employees</div>
+            </div>
+            <div class="stat-card blue">
+              <div class="stat-header">
+                <div class="stat-icon"><i data-lucide="building" style="width:24px;height:24px;"></i></div>
+              </div>
+              <div class="stat-value" id="hrDepartments">0</div>
+              <div class="stat-label">Departments</div>
+            </div>
+            <div class="stat-card orange">
+              <div class="stat-header">
+                <div class="stat-icon"><i data-lucide="calendar" style="width:24px;height:24px;"></i></div>
+              </div>
+              <div class="stat-value" id="hrPendingLeaves">0</div>
+              <div class="stat-label">Pending Leaves</div>
+            </div>
+            <div class="stat-card red">
+              <div class="stat-header">
+                <div class="stat-icon"><i data-lucide="indian-rupee" style="width:24px;height:24px;"></i></div>
+              </div>
+              <div class="stat-value" id="hrPayroll">₹0</div>
+              <div class="stat-label">Monthly Payroll</div>
+            </div>
+          </div>
+
+          <!-- Employees Table -->
+          <div class="card mb-3">
+            <div class="card-header">
+              <h3>Employees</h3>
+              <div class="filter-bar">
+                <input type="text" placeholder="Search employees..." id="hrSearch" oninput="App.filterTable('hrBody', this.value)">
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="table-container">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Department</th>
+                      <th>Designation</th>
+                      <th>Joining Date</th>
+                      <th>Salary</th>
+                    </tr>
+                  </thead>
+                  <tbody id="hrBody">
+                  </tbody>
+                </table>
+              </div>
+              <div class="empty-state" id="hrEmpty">
+                <div class="empty-icon">👥</div>
+                <div class="empty-title">No employees found</div>
+                <div class="empty-desc">Employee records will appear here once HR endpoints are added to the backend.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Leaves Table -->
+          <div class="card">
+            <div class="card-header">
+              <h3>Leave Requests</h3>
+            </div>
+            <div class="card-body">
+              <div class="table-container">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Employee</th>
+                      <th>Type</th>
+                      <th>From</th>
+                      <th>To</th>
+                      <th>Reason</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="leavesBody">
+                  </tbody>
+                </table>
+              </div>
+              <div class="empty-state" id="leavesEmpty">
+                <div class="empty-icon">📅</div>
+                <div class="empty-title">No leave requests</div>
+                <div class="empty-desc">Leave requests will appear here once HR leave endpoints are added.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ═══════════════════════════════════
+             SETTINGS PAGE
+             ═══════════════════════════════════ -->
+        <section class="page-section" id="page-settings">
+          <div class="module-header">
+            <h2>Settings</h2>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3>Profile Information</h3>
+            </div>
+            <div class="card-body">
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;">
+                <div class="form-group">
+                  <label>Full Name</label>
+                  <div class="input-wrapper">
+                    <input type="text" id="settingsName" readonly style="padding-left:1rem;">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Email</label>
+                  <div class="input-wrapper">
+                    <input type="email" id="settingsEmail" readonly style="padding-left:1rem;">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Role</label>
+                  <div class="input-wrapper">
+                    <input type="text" id="settingsRole" readonly style="padding-left:1rem;">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Status</label>
+                  <div class="input-wrapper">
+                    <input type="text" id="settingsStatus" readonly style="padding-left:1rem;">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mt-2">
+            <div class="card-header">
+              <h3>Application</h3>
+            </div>
+            <div class="card-body">
+              <p style="font-size:0.88rem;color:var(--gray-600);margin-bottom:1rem;">QuantURP v1.0 — AI-Native Voice ERP Platform</p>
+              <p style="font-size:0.82rem;color:var(--gray-400);">Backend: <a href="https://quanturpp.vercel.app" target="_blank" style="color:var(--parrot);text-decoration:underline;">https://quanturpp.vercel.app</a></p>
+              <div style="margin-top:1.5rem;">
+                <button class="btn btn-danger btn-sm" onclick="Auth.logout()">
+                  <i data-lucide="log-out" style="width:16px;height:16px;"></i> Sign Out
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div><!-- /page-content -->
+    </div><!-- /main-content -->
+  </div><!-- /dashboard-wrapper -->
+
+  <!-- ═══════ MODALS ═══════ -->
+
+  <!-- Add Product Modal -->
+  <div class="modal-overlay" id="addProductModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add Product</h3>
+        <button class="modal-close" onclick="App.hideModal('addProductModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="addProductForm">
+          <div class="form-group">
+            <label>SKU</label>
+            <div class="input-wrapper"><input type="text" name="sku" required style="padding-left:1rem;"></div>
+          </div>
+          <div class="form-group">
+            <label>Product Name</label>
+            <div class="input-wrapper"><input type="text" name="name" required style="padding-left:1rem;"></div>
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <div class="input-wrapper"><input type="text" name="description" style="padding-left:1rem;"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div class="form-group">
+              <label>Price (₹)</label>
+              <div class="input-wrapper"><input type="number" name="price" step="0.01" required style="padding-left:1rem;"></div>
+            </div>
+            <div class="form-group">
+              <label>Cost (₹)</label>
+              <div class="input-wrapper"><input type="number" name="cost" step="0.01" required style="padding-left:1rem;"></div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline btn-sm" onclick="App.hideModal('addProductModal')">Cancel</button>
+        <button class="btn btn-primary btn-sm" onclick="App.submitForm('addProductForm', '/products', 'inventory')">Save Product</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Order Modal -->
+  <div class="modal-overlay" id="addOrderModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>New Order</h3>
+        <button class="modal-close" onclick="App.hideModal('addOrderModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="addOrderForm">
+          <div class="form-group">
+            <label>Customer Name</label>
+            <div class="input-wrapper"><input type="text" name="customer_name" required style="padding-left:1rem;"></div>
+          </div>
+          <div class="form-group">
+            <label>Customer Email</label>
+            <div class="input-wrapper"><input type="email" name="customer_email" style="padding-left:1rem;"></div>
+          </div>
+          <div class="form-group">
+            <label>Total Amount (₹)</label>
+            <div class="input-wrapper"><input type="number" name="total_amount" step="0.01" required style="padding-left:1rem;"></div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline btn-sm" onclick="App.hideModal('addOrderModal')">Cancel</button>
+        <button class="btn btn-primary btn-sm" onclick="App.submitForm('addOrderForm', '/orders', 'sales')">Create Order</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Lead Modal -->
+  <div class="modal-overlay" id="addLeadModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add Lead</h3>
+        <button class="modal-close" onclick="App.hideModal('addLeadModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="addLeadForm">
+          <div class="form-group">
+            <label>Name</label>
+            <div class="input-wrapper"><input type="text" name="name" required style="padding-left:1rem;"></div>
+          </div>
+          <div class="form-group">
+            <label>Company</label>
+            <div class="input-wrapper"><input type="text" name="company" style="padding-left:1rem;"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div class="form-group">
+              <label>Email</label>
+              <div class="input-wrapper"><input type="email" name="email" style="padding-left:1rem;"></div>
+            </div>
+            <div class="form-group">
+              <label>Phone</label>
+              <div class="input-wrapper"><input type="tel" name="phone" style="padding-left:1rem;"></div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline btn-sm" onclick="App.hideModal('addLeadModal')">Cancel</button>
+        <button class="btn btn-primary btn-sm" onclick="App.submitForm('addLeadForm', '/leads', 'crm')">Save Lead</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Transaction Modal -->
+  <div class="modal-overlay" id="addTransactionModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add Transaction</h3>
+        <button class="modal-close" onclick="App.hideModal('addTransactionModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="addTransactionForm">
+          <div class="form-group">
+            <label>Type</label>
+            <div class="input-wrapper">
+              <select name="type" required style="padding:0.85rem 1rem;width:100%;border:2px solid var(--gray-200);border-radius:var(--radius-md);">
+                <option value="Income">Income</option>
+                <option value="Expense">Expense</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Amount (₹)</label>
+            <div class="input-wrapper"><input type="number" name="amount" step="0.01" required style="padding-left:1rem;"></div>
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <div class="input-wrapper"><input type="text" name="description" style="padding-left:1rem;"></div>
+          </div>
+          <div class="form-group">
+            <label>Date</label>
+            <div class="input-wrapper"><input type="date" name="transaction_date" required style="padding-left:1rem;"></div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline btn-sm" onclick="App.hideModal('addTransactionModal')">Cancel</button>
+        <button class="btn btn-primary btn-sm" onclick="App.submitForm('addTransactionForm', '/transactions', 'finance')">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Employee Modal -->
+  <div class="modal-overlay" id="addEmployeeModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add Employee</h3>
+        <button class="modal-close" onclick="App.hideModal('addEmployeeModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="addEmployeeForm">
+          <div class="form-group">
+            <label>Department</label>
+            <div class="input-wrapper"><input type="text" name="department" required style="padding-left:1rem;"></div>
+          </div>
+          <div class="form-group">
+            <label>Designation</label>
+            <div class="input-wrapper"><input type="text" name="designation" required style="padding-left:1rem;"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div class="form-group">
+              <label>Joining Date</label>
+              <div class="input-wrapper"><input type="date" name="joining_date" required style="padding-left:1rem;"></div>
+            </div>
+            <div class="form-group">
+              <label>Salary (₹)</label>
+              <div class="input-wrapper"><input type="number" name="salary" step="0.01" required style="padding-left:1rem;"></div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline btn-sm" onclick="App.hideModal('addEmployeeModal')">Cancel</button>
+        <button class="btn btn-primary btn-sm" onclick="App.submitForm('addEmployeeForm', '/employees', 'hr')">Save Employee</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/pwa.js"></script>
+</body>
+</html>
