@@ -255,7 +255,7 @@
       tempSignupData = { email, password, full_name: fullName, role };
 
       try {
-        const res = await fetch('https://quanturpp.vercel.app/api/v1/signup/request-otp', {
+        const res = await fetch('/api/v1/signup/request-otp', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(tempSignupData)
@@ -289,7 +289,7 @@
       const code = document.getElementById('otpCode').value;
 
       try {
-        const res = await fetch(`https://quanturpp.vercel.app/api/v1/signup/verify-otp?otp=${code}`, {
+        const res = await fetch(`/api/v1/signup/verify-otp?otp=${encodeURIComponent(code)}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' }
         });

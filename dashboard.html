@@ -1160,8 +1160,7 @@
       async sendToBackend(commandText) {
         const token = Auth.getToken();
         try {
-          const baseApi = 'https://quanturpp.vercel.app';
-          const res = await fetch(`${baseApi}/api/v1/voice/command`, {
+          const res = await fetch('/api/v1/voice/command', {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${token}`,

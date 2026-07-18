@@ -1,5 +1,5 @@
 // QuantURP Service Worker — Cache-first for static, Network-first for API
-const CACHE_NAME = 'quanturp-v1';
+const CACHE_NAME = 'quanturp-v2';
 const STATIC_ASSETS = [
   './',
   './index.html',
@@ -40,7 +40,7 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
 
   // API calls → Network-first
-  if (url.hostname === 'quanturpp.vercel.app') {
+  if (url.pathname.startsWith('/api/') || url.hostname === 'quanturpp.vercel.app') {
     event.respondWith(
       fetch(request)
         .then(response => {

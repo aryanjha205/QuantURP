@@ -3,8 +3,9 @@
    Backend: https://quanturpp.vercel.app
    ============================================================ */
 
-const API_BASE = 'https://quanturpp.vercel.app';
-const API_V1   = `${API_BASE}/api/v1`;
+// The frontend deployment proxies /api to the backend. Keeping requests on
+// this origin prevents browser CORS failures during signup and login.
+const API_V1 = '/api/v1';
 
 const Auth = {
   /**
